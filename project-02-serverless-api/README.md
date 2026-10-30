@@ -2,7 +2,7 @@
 
 A REST API for a simple items list. API Gateway receives requests, a Lambda function runs the logic, DynamoDB stores the data, and Cognito protects the write routes.
 
-**Status:** Code and steps written. Not yet deployed to AWS.
+**Status:** Deployed and partly verified. Public reads and the 401 checks pass. An authenticated write has not been tested yet. Torn down: not yet.
 
 ## Architecture
 
@@ -24,16 +24,22 @@ The client signs in with Cognito to get a token. API Gateway checks that token o
 Use **us-east-1** for the whole project.
 
 1. **DynamoDB:** Create table `items`, partition key `id` (String). Use on-demand capacity.
-2. **Cognito:** Create a user pool with email sign-in. Create an app client without a client secret. Create one test user.
+2. **Cognito:** Create a user pool with email sign-in. Use the **Single-page application** app type, which creates a public client with no secret. Enable the **Username and password (USER_PASSWORD_AUTH)** flow on the app client. Create one test user with a verified email and a permanent password.
 3. **Lambda:** Create function `items-api`, runtime **Python 3.12**. Paste `lambda/handler.py` into the code editor and deploy. Under **Configuration → Environment variables**, add `TABLE_NAME = items`.
-4. **Lambda permissions:** On the execution role, attach a policy that allows `dynamodb:Scan`, `GetItem`, `PutItem`, and `DeleteItem` on the `items` table ARN only.
-5. **API Gateway:** Create an **HTTP API**. Add the four routes above, with the Lambda as the integration for all of them.
-6. **Authorizer:** Create a JWT authorizer with the Cognito user pool's issuer URL and the app client ID as the audience. Attach it to the POST and DELETE routes only.
+   - **Handler:** The console creates `lambda_function.py` with a default handler. Put the code in `lambda_function.py`, and set **Runtime settings → Handler** to `lambda_function.handler`. A mismatch here causes `Runtime.HandlerNotFound` on every request.
+4. **Lambda permissions:** On the execution role, add an inline policy that allows `dynamodb:Scan`, `GetItem`, `PutItem`, and `DeleteItem` on the `items` table ARN only.
+5. **API Gateway:** Create an **HTTP API** named `items-api`. Add the four routes above. Attach the Lambda as the integration for each one. Using one shared integration is cleaner than creating one per route.
+6. **Authorizer:** Create a JWT authorizer named `cognito-jwt`:
+   - **Issuer URL:** `https://cognito-idp.us-east-1.amazonaws.com/<user-pool-id>`
+   - **Audience:** the app client ID
+   - **Identity source:** `$request.header.Authorization`
+
+   Attach it to the POST and DELETE routes only.
 7. **Deploy:** Create the `$default` stage with auto-deploy on. Copy the invoke URL.
 
 ## Verification
 
-Replace `API_URL` with your invoke URL and `TOKEN` with an ID token from the Cognito test user (sign in through the hosted UI or `aws cognito-idp initiate-auth`).
+Replace `API_URL` with your invoke URL.
 
 ```bash
 # Public: should return []
@@ -41,15 +47,26 @@ curl -s API_URL/items
 
 # Protected: without a token, expect 401
 curl -s -o /dev/null -w "%{http_code}\n" -X POST API_URL/items -H "Content-Type: application/json" -d '{"name":"test"}'
+curl -s -o /dev/null -w "%{http_code}\n" -X DELETE API_URL/items/abc
 
 # Protected: with a token, expect 201 and an id
-curl -s -X POST API_URL/items -H "Authorization: Bearer TOKEN" -H "Content-Type: application/json" -d '{"name":"test"}'
+curl -i -X POST API_URL/items -H "Authorization: Bearer TOKEN" -H "Content-Type: application/json" -d '{"name":"first item"}'
 ```
 
+Get `TOKEN` from the Cognito `InitiateAuth` endpoint with `USER_PASSWORD_AUTH`. Use the **ID token**, not the access token, because the authorizer checks the `aud` claim.
+
 **Checkpoints:**
-- The unauthenticated POST returns `401`.
-- The authenticated POST returns `201` and the item appears in DynamoDB's **Explore items** view.
-- The Lambda's CloudWatch log group shows one invocation per request.
+- `GET /items` returns `200` and `[]`. **Verified.**
+- The unauthenticated POST and DELETE return `401`. **Verified.**
+- The authenticated POST returns `201`, and the item shows up in a GET. **Not yet tested.**
+- The authenticated DELETE returns `204`. **Not yet tested.**
+- The Lambda's log group shows one invocation per request.
+
+## Issues I hit and how I fixed them
+
+- **`Runtime.HandlerNotFound: Handler 'lambda_handler'`.** The console default handler didn't match the code. Fixed by setting the handler to `lambda_function.handler`.
+- **Route missing after cleanup.** Deleting the extra integrations removed the `GET /items` route's integration, and the route then returned `404`. Recreated the route and attached the shared integration.
+- **Blocked integration delete.** An integration can't be deleted while a route uses it. Each route has to point at the shared integration first.
 
 ## Teardown
 
@@ -65,3 +82,4 @@ curl -s -X POST API_URL/items -H "Authorization: Bearer TOKEN" -H "Content-Type:
 - Managed NoSQL with a partition key (DynamoDB)
 - JWT authorization with a managed identity provider (Cognito + API Gateway)
 - Least-privilege IAM for a single table
+- Diagnosing a failed invocation with CloudWatch logs
