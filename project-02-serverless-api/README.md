@@ -2,7 +2,7 @@
 
 A REST API for a simple items list. API Gateway receives requests, a Lambda function runs the logic, DynamoDB stores the data, and Cognito protects the write routes.
 
-**Status:** Deployed and partly verified. Public reads and the 401 checks pass. An authenticated write has not been tested yet. Torn down: not yet.
+**Status:** Deployed and verified. Public reads, 401 checks, and the authenticated create and delete all pass. Torn down: not yet.
 
 ## Architecture
 
@@ -58,14 +58,15 @@ Get `TOKEN` from the Cognito `InitiateAuth` endpoint with `USER_PASSWORD_AUTH`. 
 **Checkpoints:**
 - `GET /items` returns `200` and `[]`. **Verified.**
 - The unauthenticated POST and DELETE return `401`. **Verified.**
-- The authenticated POST returns `201`, and the item shows up in a GET. **Skipped, not run.** The test user has a temporary password that was never changed, so no ID token was obtained.
-- The authenticated DELETE returns `204`. **Skipped, not run.** Same reason.
+- The authenticated POST returns `201`, and the item shows up in a GET. **Verified.**
+- The authenticated DELETE returns `204`, and the GET returns `[]` again. **Verified.**
 - The Lambda's log group shows one invocation per request.
 
 ## Issues I hit and how I fixed them
 
 - **`Runtime.HandlerNotFound: Handler 'lambda_handler'`.** The console default handler didn't match the code. Fixed by setting the handler to `lambda_function.handler`.
 - **Route missing after cleanup.** Deleting the extra integrations removed the `GET /items` route's integration, and the route then returned `404`. Recreated the route and attached the shared integration.
+- **Test user stuck on a temporary password.** Console-created users must change their password at first sign-in. The sign-in call returns a `NEW_PASSWORD_REQUIRED` challenge, which has to be answered with `RespondToAuthChallenge` before any token is issued.
 - **Blocked integration delete.** An integration can't be deleted while a route uses it. Each route has to point at the shared integration first.
 
 ## Teardown
