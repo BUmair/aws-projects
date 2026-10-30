@@ -58,8 +58,8 @@ Get `TOKEN` from the Cognito `InitiateAuth` endpoint with `USER_PASSWORD_AUTH`. 
 **Checkpoints:**
 - `GET /items` returns `200` and `[]`. **Verified.**
 - The unauthenticated POST and DELETE return `401`. **Verified.**
-- The authenticated POST returns `201`, and the item shows up in a GET. **Not yet tested.**
-- The authenticated DELETE returns `204`. **Not yet tested.**
+- The authenticated POST returns `201`, and the item shows up in a GET. **Skipped, not run.** The test user has a temporary password that was never changed, so no ID token was obtained.
+- The authenticated DELETE returns `204`. **Skipped, not run.** Same reason.
 - The Lambda's log group shows one invocation per request.
 
 ## Issues I hit and how I fixed them

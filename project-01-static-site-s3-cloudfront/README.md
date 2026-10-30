@@ -6,12 +6,9 @@ A static HTML site hosted in a **private** S3 bucket and served globally through
 
 ## Architecture
 
-```
-Browser → CloudFront (HTTPS, default *.cloudfront.net cert)
-             │  signs request with OAC
-             ▼
-          S3 bucket (private, Block Public Access on, versioning on)
-```
+![Architecture: browser to CloudFront with OAC to a private S3 bucket; a direct S3 request is denied](images/architecture.svg)
+
+CloudFront is the only thing allowed to read the bucket. It signs each request with Origin Access Control, and a direct request to the S3 URL returns `AccessDenied`.
 
 ## What I built
 
