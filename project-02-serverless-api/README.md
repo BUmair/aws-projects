@@ -2,7 +2,7 @@
 
 A REST API for a simple items list. API Gateway receives requests, a Lambda function runs the logic, DynamoDB stores the data, and Cognito protects the write routes.
 
-**Status:** Deployed and verified. Public reads, 401 checks, and the authenticated create and delete all pass. Torn down: not yet.
+**Status:** Deployed and verified. Public reads, 401 checks, and the authenticated create and delete all pass. Torn down: yes, all resources deleted.
 
 ## Architecture
 
