@@ -6,15 +6,9 @@ A REST API for a simple items list. API Gateway receives requests, a Lambda func
 
 ## Architecture
 
-```
-Client ──(JWT for POST/DELETE)──► API Gateway (HTTP API)
-                                      │  JWT authorizer (Cognito user pool)
-                                      ▼
-                                 Lambda (Python 3.12)
-                                      │
-                                      ▼
-                                 DynamoDB table "items" (partition key: id)
-```
+![Architecture: client, Cognito, API Gateway with JWT authorizer, Lambda, DynamoDB, and CloudWatch Logs](images/architecture.svg)
+
+The client signs in with Cognito to get a token. API Gateway checks that token on the write routes, then invokes a Lambda function. The function reads and writes a DynamoDB table and logs each request to CloudWatch.
 
 ## Routes
 
