@@ -12,5 +12,4 @@ Hands-on AWS projects built to learn the services behind the AWS Certified Solut
 ## Conventions
 
 - Each project lives in its own folder with a README covering architecture, build steps, verification, teardown, and the concepts practiced.
-- Projects are built in the AWS console unless noted. Project 5 uses Terraform because infrastructure as code is its focus.
 - Every project ends with a teardown section so nothing keeps running and costing money.
