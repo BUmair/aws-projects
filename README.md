@@ -8,10 +8,6 @@ Hands-on AWS projects built to learn the services behind the AWS Certified Solut
 |---|---------|----------|--------|
 | 1 | [Static site on private S3 + CloudFront](project-01-static-site-s3-cloudfront/) | S3, CloudFront, OAC | Deployed, verified, torn down |
 | 2 | [Serverless REST API](project-02-serverless-api/) | API Gateway, Lambda, DynamoDB, Cognito | Deployed, verified, torn down |
-| 3 | [Event-driven pipeline](project-03-event-pipeline/) | EventBridge, SQS, SNS, Lambda, CloudWatch | Written, not deployed |
-| 4 | [Containers on ECS Fargate behind an ALB](project-04-ecs-fargate-alb/) | ECS, Fargate, ALB, ECR, VPC | Written, not deployed |
-| 5 | [IaC + GitHub Actions OIDC](project-05-iac-github-actions-oidc/) | Terraform, IAM, OIDC | Written, not deployed |
-| 6 | [Observability, secrets, and encryption](project-06-observability-secrets-kms/) | CloudWatch, Secrets Manager, KMS, Lambda | Written, not deployed |
 
 ## Conventions
 
