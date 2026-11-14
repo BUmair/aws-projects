@@ -1,4 +1,4 @@
-# Project 1: Static Website on S3 + CloudFront (Private with OAC)
+# Project 2: Static Website on S3 + CloudFront (Private with OAC)
 
 A static HTML site hosted in a **private** S3 bucket and served globally through CloudFront. The bucket is not public. Only the CloudFront distribution can read from it, using Origin Access Control (OAC).
 

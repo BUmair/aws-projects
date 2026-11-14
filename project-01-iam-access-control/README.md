@@ -1,4 +1,4 @@
-# Project 3: AWS IAM Access Control
+# Project 1: AWS IAM Access Control
 
 Tag-based IAM access control. A developer can stop development EC2 instances but cannot touch production ones. The rule is set by the `Env` tag, and a separate user login confirms it works.
 

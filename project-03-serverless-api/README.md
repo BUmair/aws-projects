@@ -1,4 +1,4 @@
-# Project 2: Serverless REST API (API Gateway + Lambda + DynamoDB + Cognito)
+# Project 3: Serverless REST API (API Gateway + Lambda + DynamoDB + Cognito)
 
 A REST API for a simple items list. API Gateway receives requests, a Lambda function runs the logic, DynamoDB stores the data, and Cognito protects the write routes.
 

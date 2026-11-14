@@ -2,12 +2,15 @@
 
 Hands-on AWS projects built to learn the services behind the AWS Certified Solutions Architect – Associate and AWS Certified Cloud Practitioner exams. Each project has its own README covering architecture, build steps, verification, and teardown, so nothing is left running after the project ends.
 
+Projects are listed from easiest to hardest.
+
 ## Projects
 
 | # | Project | Services | Status |
 |---|---------|----------|--------|
-| 1 | [Static site on private S3 + CloudFront](project-01-static-site-s3-cloudfront/) | S3, CloudFront, OAC | Deployed, verified, torn down |
-| 2 | [Serverless REST API](project-02-serverless-api/) | API Gateway, Lambda, DynamoDB, Cognito | Deployed, verified, torn down |
+| 1 | [AWS IAM access control](project-01-iam-access-control/) | EC2, IAM | Built, tested, torn down |
+| 2 | [Static site on private S3 + CloudFront](project-02-static-site-s3-cloudfront/) | S3, CloudFront, OAC | Deployed, verified, torn down |
+| 3 | [Serverless REST API](project-03-serverless-api/) | API Gateway, Lambda, DynamoDB, Cognito | Deployed, verified, torn down |
 
 ## Conventions
 
